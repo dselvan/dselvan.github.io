@@ -21,7 +21,7 @@ jobs:
           7.0.x
     
     - name: publish 
-      run: dotnet publish dselvan.github.io.csproj -c Release -o release
+      run: dotnet publish dselvan.github.io.csproj -c Release -o release --nologo
 
     # Copy index.html to 404.html to serve the same file when a file is not found
     - name: setup 404

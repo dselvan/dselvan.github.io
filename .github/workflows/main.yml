@@ -1,6 +1,4 @@
-name: Deploy to Github Pages
-description: "Publish a Blazor WASM to Github Pages"
-author: "Deepak Selvan"
+name: deploy blazor to github pages
 
 inputs:
   name:
@@ -24,7 +22,7 @@ on:
 jobs:
   # Publish Job
   publish-and-upload:
-    name: dotnet publish for github pages
+    name: Publish and Upload
     runs-on: ubuntu-latest
 
     steps:
@@ -73,6 +71,7 @@ jobs:
 
   # Deploy job
   deploy:
+    name: Deploy
     # Add a dependency to the build job
     needs: publish-and-upload
 

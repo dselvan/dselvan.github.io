@@ -1,0 +1,35 @@
+name: Deploy to Github Pages
+
+on:
+  push:
+    branches: 
+    - main
+
+jobs:
+  deploy-to-github-pages:
+    name: deploy to github pages
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: | 
+          7.0.x
+    - name: Publish 
+    - run: dotnet publish dselvan.github.io.csproj -c Release -o release –nologo
+
+    # Copy index.html to 404.html to serve the same file when a file is not found
+    - name: setup 404
+    - run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+    # Add the .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+    - name: Add .nojekyll file
+    - run: touch release/wwwroot/.nojekyll
+
+    - name: deploy wwwroot
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: release/wwwroot

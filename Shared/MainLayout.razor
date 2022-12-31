@@ -13,14 +13,16 @@
         <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        @Body
+        <MudContainer MaxWidth="MaxWidth.Large">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
 
     private bool _isDarkMode;
-    private MudThemeProvider _mudThemeProvider;
+    private MudThemeProvider? _mudThemeProvider;
 
     bool _drawerOpen = false;
 
@@ -28,7 +30,7 @@
     {
         if (firstRender)
         {
-            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            _isDarkMode = await _mudThemeProvider!.GetSystemPreference();
             StateHasChanged();
         }
     }

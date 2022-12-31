@@ -1,0 +1,60 @@
+﻿@page "/blog"
+@inject HttpClient Http
+
+@using Models
+@using Markdig
+
+<PageTitle>Blog</PageTitle>
+
+<MudText Typo="Typo.h2" GutterBottom="true">Blog Posts</MudText>
+
+@if (entries == null)
+{
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+
+}
+else
+{
+                        <MudCard>
+        @foreach (var entry in entries)
+        {
+                                <MudCardContent>
+                                            <MudText>@entry.Title</MudText>
+                                    <MudText Typo="Typo.body2">One line description.</MudText>
+                                </MudCardContent>
+
+                                <MudCardActions>
+                                    <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                                </MudCardActions>
+        }
+                </MudCard>
+}
+
+@code {
+    private List<BlogManifestEntry>? entries;
+    private List<MarkupString> content = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        entries = await Http.GetFromJsonAsync<List<BlogManifestEntry>>("_posts/manifest.json");
+
+        if (entries is null)
+        {
+            return;
+        }
+
+        var pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .UseBootstrap()
+        .UseSmartyPants()
+        .UseEmojiAndSmiley()
+        .Build();
+
+
+        foreach (var entry in entries)
+        {
+            var markdown = await Http.GetStringAsync($"_posts/{entry.Path}");
+            content.Add((MarkupString)Markdig.Markdown.ToHtml(markdown, pipeline));
+        }
+    }
+}
